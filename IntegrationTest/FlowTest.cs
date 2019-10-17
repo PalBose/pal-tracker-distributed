@@ -19,35 +19,38 @@ namespace IntegrationTest
         private readonly AppServer _timesheetsServer;
 
         public FlowTest()
- {
-     _registrationServer = TestAppServerBuilder()
+{
+    _registrationServer = TestAppServerBuilder()
         .AppName("RegistrationServer")
         .Port(8883)
-        .Database("tracker_registration_dotnet_test")
-       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDREGISTERWITHEUREKA", "false")
+        .Database("tracker_registration_test")
+       .SetEnvironmentVariable("DISABLE_AUTH", "true")
         .Build();
-     _allocationsServer = TestAppServerBuilder()
+
+    _allocationsServer = TestAppServerBuilder()
         .AppName("AllocationsServer")
         .Port(8881)
-        .Database("tracker_allocations_dotnet_test")
+        .Database("tracker_allocations_test")
         .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
-       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDFETCHREGISTRY", "false")
+       .SetEnvironmentVariable("DISABLE_AUTH", "true")
         .Build();
-     _backlogServer = TestAppServerBuilder()
+
+    _backlogServer = TestAppServerBuilder()
         .AppName("BacklogServer")
         .Port(8882)
-        .Database("tracker_backlog_dotnet_test")
+        .Database("tracker_backlog_test")
         .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
-       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDFETCHREGISTRY", "false")
+       .SetEnvironmentVariable("DISABLE_AUTH", "true")
         .Build();
-     _timesheetsServer = TestAppServerBuilder()
+
+    _timesheetsServer = TestAppServerBuilder()
         .AppName("TimesheetsServer")
         .Port(8884)
-        .Database("tracker_timesheets_dotnet_test")
+        .Database("tracker_timesheets_test")
         .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
-       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDFETCHREGISTRY", "false")
+       .SetEnvironmentVariable("DISABLE_AUTH", "true")
         .Build();
- }
+}
 
         [Fact]
         public void TestBasicFlow()

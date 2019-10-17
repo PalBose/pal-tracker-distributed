@@ -6,6 +6,8 @@ applications:
   routes:
   - route: timesheets-pal-Pallavi.cfapps.io
   path: Applications/TimesheetsServer/bin/Release/netcoreapp2.1/publish
+  env:
+    GRANT_TYPE: client_credentials
   services:
   - tracker-timesheets-database
   - tracker-service-registry

@@ -6,6 +6,8 @@ applications:
   routes:
   - route: allocations-pal-Pallavi.cfapps.io
   path: Applications/AllocationsServer/bin/Release/netcoreapp2.1/publish
+  env:
+    GRANT_TYPE: client_credentials
   services:
   - tracker-allocations-database
   - tracker-service-registry

@@ -6,6 +6,8 @@ applications:
   routes:
   - route: backlog-pal-Pallavi.cfapps.io
   path: Applications/BacklogServer/bin/Release/netcoreapp2.1/publish
+  env:
+    GRANT_TYPE: client_credentials
   services:
   - tracker-backlog-database
   - tracker-service-registry
