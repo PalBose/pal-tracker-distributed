@@ -7,10 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Steeltoe.CloudFoundry.Connector.MySql.EFCore;
-
 using Pivotal.Discovery.Client;
-
 using Steeltoe.Common.Discovery;
+using Steeltoe.CircuitBreaker.Hystrix;
+
 namespace AllocationsServer
 {
     public class Startup
@@ -34,13 +34,15 @@ namespace AllocationsServer
             services.AddSingleton<IProjectClient>(sp =>
             {
                  var handler = new DiscoveryHttpClientHandler(sp.GetService<IDiscoveryClient>());
-             var httpClient = new HttpClient(handler, false)
+                var httpClient = new HttpClient(handler, false)
                 {
                     BaseAddress = new Uri(Configuration.GetValue<string>("REGISTRATION_SERVER_ENDPOINT"))
                 };
 
-                return new ProjectClient(httpClient);
+                var logger = sp.GetService<ILogger<ProjectClient>>();
+                return new ProjectClient(httpClient, logger);
             });
+            services.AddHystrixMetricsStream(Configuration);
 services.AddDiscoveryClient(Configuration);
         }
 
@@ -51,7 +53,9 @@ services.AddDiscoveryClient(Configuration);
             loggerFactory.AddDebug();
 
             app.UseMvc();
-app.UseDiscoveryClient();
+            app.UseDiscoveryClient();
+            app.UseHystrixMetricsStream();
+            app.UseHystrixRequestContext();
         }
     }
 }
