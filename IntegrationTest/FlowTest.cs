@@ -19,34 +19,35 @@ namespace IntegrationTest
         private readonly AppServer _timesheetsServer;
 
         public FlowTest()
-        {
-            _registrationServer = TestAppServerBuilder()
-                .AppName("RegistrationServer")
-                .Port(8883)
-                .Database("tracker_registration_dotnet_test")
-                .Build();
-
-            _allocationsServer = TestAppServerBuilder()
-                .AppName("AllocationsServer")
-                .Port(8881)
-                .Database("tracker_allocations_dotnet_test")
-                .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
-                .Build();
-
-            _backlogServer = TestAppServerBuilder()
-                .AppName("BacklogServer")
-                .Port(8882)
-                .Database("tracker_backlog_dotnet_test")
-                .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
-                .Build();
-
-            _timesheetsServer = TestAppServerBuilder()
-                .AppName("TimesheetsServer")
-                .Port(8884)
-                .Database("tracker_timesheets_dotnet_test")
-                .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
-                .Build();
-        }
+ {
+     _registrationServer = TestAppServerBuilder()
+        .AppName("RegistrationServer")
+        .Port(8883)
+        .Database("tracker_registration_dotnet_test")
+       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDREGISTERWITHEUREKA", "false")
+        .Build();
+     _allocationsServer = TestAppServerBuilder()
+        .AppName("AllocationsServer")
+        .Port(8881)
+        .Database("tracker_allocations_dotnet_test")
+        .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
+       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDFETCHREGISTRY", "false")
+        .Build();
+     _backlogServer = TestAppServerBuilder()
+        .AppName("BacklogServer")
+        .Port(8882)
+        .Database("tracker_backlog_dotnet_test")
+        .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
+       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDFETCHREGISTRY", "false")
+        .Build();
+     _timesheetsServer = TestAppServerBuilder()
+        .AppName("TimesheetsServer")
+        .Port(8884)
+        .Database("tracker_timesheets_dotnet_test")
+        .SetEnvironmentVariable("REGISTRATION_SERVER_ENDPOINT", _registrationServer.Url())
+       .SetEnvironmentVariable("EUREKA__CLIENT__SHOULDFETCHREGISTRY", "false")
+        .Build();
+ }
 
         [Fact]
         public void TestBasicFlow()
